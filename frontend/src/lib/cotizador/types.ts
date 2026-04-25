@@ -54,5 +54,21 @@ export interface ProcessRun {
   run_id: string;
   processed_at: string;
   metrics: ProcessRunMetrics;
+  integrations?: IntegrationStatus;
   results: ProcessedEmail[];
+}
+
+export interface IntegrationStatus {
+  google_sheets: {
+    configured: boolean;
+    target?: string | null;
+  };
+  email: {
+    enabled: boolean;
+    dry_run: boolean;
+    smtp_configured: boolean;
+    override_to?: string | null;
+    from?: string | null;
+  };
+  warnings: string[];
 }

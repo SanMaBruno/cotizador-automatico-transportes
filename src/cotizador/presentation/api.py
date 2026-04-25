@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from cotizador.application.process_inbox import ProcessInboxUseCase
 from cotizador.classifier import RuleBasedEmailClassifier
+from cotizador.config.env import load_local_env
 from cotizador.domain.entities import CargoType, Email, EmailCategory, ProcessedEmail
 from cotizador.domain.rates import default_rate_table
 from cotizador.infrastructure.json_email_repository import JsonEmailRepository
@@ -24,6 +25,8 @@ from cotizador.integrations import (
 from cotizador.quotation import QuoteCalculator, ShipmentRequestExtractor
 from cotizador.responder import ResponseBuilder
 
+
+load_local_env()
 
 app = FastAPI(title="Mini-cotizador Transportes La Serena", version="0.1.0")
 app.add_middleware(
@@ -77,6 +80,11 @@ def health() -> Dict[str, str]:
     return {"status": "ok", "mode": "fastapi-local"}
 
 
+@app.get("/integrations/status")
+def integrations_status() -> Dict[str, Any]:
+    return _integration_status()
+
+
 @app.get("/emails")
 def emails() -> List[Dict[str, Any]]:
     repository = JsonEmailRepository(_input_path())
@@ -104,6 +112,7 @@ def _run_to_api(results: List[ProcessedEmail]) -> Dict[str, Any]:
     return {
         "run_id": f"run_{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}",
         "processed_at": datetime.now(timezone.utc).isoformat(),
+        "integrations": _integration_status(),
         "metrics": {
             "total": len(api_results),
             "cotizaciones_generadas": sum(
@@ -120,6 +129,47 @@ def _run_to_api(results: List[ProcessedEmail]) -> Dict[str, Any]:
         },
         "results": api_results,
     }
+
+
+def _integration_status() -> Dict[str, Any]:
+    sheets_url = os.getenv("COTIZADOR_GOOGLE_SHEETS_WEBHOOK_URL", "").strip()
+    dry_run = os.getenv("COTIZADOR_EMAIL_DRY_RUN", "").lower() == "true"
+    override_to = os.getenv("COTIZADOR_EMAIL_OVERRIDE_TO", "").strip()
+    smtp_host = os.getenv("SMTP_HOST", "").strip()
+    smtp_username = os.getenv("SMTP_USERNAME", "").strip()
+    smtp_password = os.getenv("SMTP_PASSWORD", "").strip()
+    smtp_from = os.getenv("SMTP_FROM", "").strip()
+    smtp_configured = all([smtp_host, smtp_username, smtp_password, smtp_from])
+    email_enabled = dry_run or smtp_configured
+    warnings = []
+
+    if not sheets_url:
+        warnings.append("Google Sheets no esta configurado: falta COTIZADOR_GOOGLE_SHEETS_WEBHOOK_URL.")
+    if not email_enabled:
+        warnings.append("Envio de email no esta configurado: falta SMTP o COTIZADOR_EMAIL_DRY_RUN=true.")
+    if email_enabled and not override_to:
+        warnings.append("COTIZADOR_EMAIL_OVERRIDE_TO no esta configurado; se enviaria al remitente original del dataset.")
+
+    return {
+        "google_sheets": {
+            "configured": bool(sheets_url),
+            "target": _safe_url(sheets_url) if sheets_url else None,
+        },
+        "email": {
+            "enabled": email_enabled,
+            "dry_run": dry_run,
+            "smtp_configured": smtp_configured,
+            "override_to": override_to or None,
+            "from": smtp_from or None,
+        },
+        "warnings": warnings,
+    }
+
+
+def _safe_url(url: str) -> str:
+    if len(url) <= 46:
+        return url
+    return f"{url[:32]}...{url[-10:]}"
 
 
 def _processed_to_api(processed: ProcessedEmail) -> Dict[str, Any]:

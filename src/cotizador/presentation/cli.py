@@ -5,6 +5,7 @@ from pathlib import Path
 
 from cotizador.application.process_inbox import ProcessInboxUseCase
 from cotizador.classifier import RuleBasedEmailClassifier
+from cotizador.config.env import load_local_env
 from cotizador.domain.rates import default_rate_table
 from cotizador.infrastructure.json_email_repository import JsonEmailRepository
 from cotizador.integrations import (
@@ -37,6 +38,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
+    load_local_env()
     args = build_parser().parse_args()
 
     rates = default_rate_table()

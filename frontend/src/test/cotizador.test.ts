@@ -35,7 +35,7 @@ describe("cotizador frontend mock", () => {
       "quote_request",
       "reply_with_quote",
       "urgencia +15%",
-      "Google Sheets ✓",
+      "auditoria local",
     ]);
     expect(buildDecisionSteps(run.results[3]).map((step) => step.label)).toEqual([
       "supplier_offer",

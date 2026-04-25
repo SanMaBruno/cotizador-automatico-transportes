@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
 import { api } from "@/lib/api";
-import type { Action, ProcessRun } from "@/lib/cotizador/types";
+import type { Action, IntegrationStatus, ProcessRun } from "@/lib/cotizador/types";
 import { formatCLP } from "@/lib/cotizador/rules";
 import { getQuotedTotalClp, getRunTotalSeconds } from "@/lib/cotizador/presentation";
 import { MetricCard } from "@/components/cotizador/MetricCard";
@@ -11,6 +11,7 @@ import { EmailResultCard } from "@/components/cotizador/EmailResultCard";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import {
   Activity,
+  AlertCircle,
   CheckCircle2,
   Inbox,
   Loader2,
@@ -32,6 +33,7 @@ type ResultFilter = "todos" | "cotizados" | "incompletos" | "filtrados";
 const Index = () => {
   const [health, setHealth] = useState<{ status: string; mode?: string } | null>(null);
   const [run, setRun] = useState<ProcessRun | null>(null);
+  const [integrations, setIntegrations] = useState<IntegrationStatus | null>(null);
   const [loading, setLoading] = useState(false);
   const [flowProgress, setFlowProgress] = useState(0);
   const [filter, setFilter] = useState<ResultFilter>("todos");
@@ -42,6 +44,10 @@ const Index = () => {
       .health()
       .then(setHealth)
       .catch(() => setHealth({ status: "down" }));
+    api
+      .integrationsStatus()
+      .then(setIntegrations)
+      .catch(() => setIntegrations(null));
     api.latestRun().then((r) => r && setRun(r));
   }, []);
 
@@ -54,6 +60,9 @@ const Index = () => {
     try {
       const r = await api.process();
       setRun(r);
+      if (r.integrations) {
+        setIntegrations(r.integrations);
+      }
       setFlowProgress(5);
       toast({
         title: "Procesamiento completado",
@@ -76,6 +85,10 @@ const Index = () => {
   const quotedTotal = getQuotedTotalClp(run);
   const runTotalSeconds = getRunTotalSeconds(run);
   const visibleResults = run?.results.filter((result) => matchesFilter(result.action, filter)) ?? [];
+  const effectiveIntegrations = run?.integrations ?? integrations;
+  const sheetsConfigured = Boolean(effectiveIntegrations?.google_sheets.configured);
+  const emailEnabled = Boolean(effectiveIntegrations?.email.enabled);
+  const integrationWarnings = effectiveIntegrations?.warnings ?? [];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -182,13 +195,32 @@ const Index = () => {
             <div className="mt-4 space-y-3 text-sm">
               <IntegrationRow label="API" value={api.mode === "remote" ? api.baseUrl : "mock local"} ok={healthy} />
               <IntegrationRow label="Auditoría" value="out/api_processed_emails.jsonl" ok />
-              <IntegrationRow label="Google Sheets" value="COTIZADOR_GOOGLE_SHEETS_WEBHOOK_URL" ok />
-              <IntegrationRow label="Correo demo" value="COTIZADOR_EMAIL_OVERRIDE_TO" ok />
+              <IntegrationRow
+                label="Google Sheets"
+                value={effectiveIntegrations?.google_sheets.target ?? "No configurado"}
+                ok={sheetsConfigured}
+              />
+              <IntegrationRow
+                label="Correo demo"
+                value={emailTargetLabel(effectiveIntegrations)}
+                ok={emailEnabled}
+              />
             </div>
-            <p className="mt-4 rounded-md bg-muted p-3 text-xs text-muted-foreground">
-              Para probar Google Sheets real, configura el Apps Script de `docs/google-sheets-apps-script.js`
-              y levanta FastAPI con esa URL.
-            </p>
+            {integrationWarnings.length > 0 ? (
+              <div className="mt-4 rounded-md border border-warning/30 bg-warning-soft p-3 text-xs text-warning">
+                <div className="mb-1 flex items-center gap-1.5 font-semibold">
+                  <AlertCircle className="h-3.5 w-3.5" />
+                  Integración incompleta
+                </div>
+                {integrationWarnings.map((warning) => (
+                  <p key={warning}>{warning}</p>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-4 rounded-md bg-muted p-3 text-xs text-muted-foreground">
+                Google Sheets y email están configurados en el backend activo.
+              </p>
+            )}
           </Card>
         </section>
 
@@ -306,6 +338,12 @@ function Step({
       </div>
     </div>
   );
+}
+
+function emailTargetLabel(status: IntegrationStatus | null | undefined): string {
+  if (!status?.email.enabled) return "No configurado";
+  if (status.email.dry_run) return `Dry-run ${status.email.override_to ?? ""}`.trim();
+  return status.email.override_to ?? status.email.from ?? "SMTP configurado";
 }
 
 function matchesFilter(action: Action, filter: ResultFilter): boolean {

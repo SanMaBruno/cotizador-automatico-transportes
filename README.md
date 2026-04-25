@@ -175,6 +175,29 @@ python3 -m pip install -e .
 PYTHONPATH=src python3 -m unittest discover -s tests -v
 ```
 
+Configuracion local real:
+
+```bash
+cp .env.example .env
+```
+
+Edita `.env` y reemplaza:
+
+- `COTIZADOR_GOOGLE_SHEETS_WEBHOOK_URL` por la URL `/exec` del deployment de Apps Script.
+- `SMTP_USERNAME` por tu Gmail.
+- `SMTP_PASSWORD` por una App Password de Gmail, no la contrasena normal.
+- `SMTP_FROM` usando el mismo Gmail.
+- `COTIZADOR_EMAIL_OVERRIDE_TO=brunorodolfosanmartinnavarro@gmail.com`.
+- `COTIZADOR_EMAIL_DRY_RUN=false` para enviar correos reales.
+
+El backend carga `.env` automaticamente al iniciar. Antes de la demo, verifica integraciones con:
+
+```bash
+curl http://127.0.0.1:8000/integrations/status
+```
+
+Para que la demo real este lista, debe responder `google_sheets.configured: true`, `email.enabled: true` y sin warnings criticos.
+
 CLI end-to-end:
 
 ```bash

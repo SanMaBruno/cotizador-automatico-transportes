@@ -7,9 +7,25 @@ import type {
   ProcessedEmail,
   ProcessRun,
   ProcessRunMetrics,
+  IntegrationStatus,
 } from "./types";
 
 let LATEST_RUN: ProcessRun | null = null;
+
+const MOCK_INTEGRATIONS: IntegrationStatus = {
+  google_sheets: {
+    configured: true,
+    target: "mock local",
+  },
+  email: {
+    enabled: true,
+    dry_run: true,
+    smtp_configured: false,
+    override_to: "brunorodolfosanmartinnavarro@gmail.com",
+    from: null,
+  },
+  warnings: ["Modo mock: no escribe en Google Sheets ni envia correos reales."],
+};
 
 function processEmail(email: Email): ProcessedEmail {
   const { classification, confidence } = classify(email);
@@ -85,6 +101,9 @@ export const mockClient = {
   async health() {
     return { status: "ok", mode: "mock-local" as const };
   },
+  async integrationsStatus(): Promise<IntegrationStatus> {
+    return MOCK_INTEGRATIONS;
+  },
   async getEmails(): Promise<Email[]> {
     return SAMPLE_EMAILS;
   },
@@ -96,6 +115,7 @@ export const mockClient = {
       run_id: `run_${Date.now()}`,
       processed_at: new Date().toISOString(),
       metrics: buildMetrics(results),
+      integrations: MOCK_INTEGRATIONS,
       results,
     };
     LATEST_RUN = run;

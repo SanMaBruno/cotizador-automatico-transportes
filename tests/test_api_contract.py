@@ -17,11 +17,21 @@ class ApiContractTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], "ok")
 
+    def test_integrations_status_exposes_configuration(self) -> None:
+        response = self.client.get("/integrations/status")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIn("google_sheets", payload)
+        self.assertIn("email", payload)
+        self.assertIn("warnings", payload)
+
     def test_process_matches_frontend_contract(self) -> None:
         response = self.client.post("/process")
 
         self.assertEqual(response.status_code, 200)
         payload = response.json()
+        self.assertIn("integrations", payload)
         self.assertEqual(payload["metrics"]["total"], 5)
         self.assertEqual(payload["metrics"]["cotizaciones_generadas"], 2)
         self.assertEqual(payload["metrics"]["solicitudes_incompletas"], 1)

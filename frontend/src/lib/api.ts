@@ -1,7 +1,7 @@
 // Cliente API: por defecto usa FastAPI local.
 // Para demo sin backend: VITE_USE_MOCK=true.
 import { mockClient } from "./cotizador/mockClient";
-import type { Email, ProcessRun } from "./cotizador/types";
+import type { Email, IntegrationStatus, ProcessRun } from "./cotizador/types";
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
 const BASE = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "http://localhost:8000";
@@ -22,6 +22,10 @@ export const api = {
   async health() {
     if (USE_MOCK) return mockClient.health();
     return http<{ status: string; mode?: string }>("/health");
+  },
+  async integrationsStatus(): Promise<IntegrationStatus> {
+    if (USE_MOCK) return mockClient.integrationsStatus();
+    return http<IntegrationStatus>("/integrations/status");
   },
   async getEmails(): Promise<Email[]> {
     if (USE_MOCK) return mockClient.getEmails();

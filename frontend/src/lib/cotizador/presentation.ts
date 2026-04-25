@@ -27,14 +27,14 @@ export function buildDecisionSteps(result: ProcessedEmail): DecisionStep[] {
     result.quote.descuentos.forEach((descuento) => {
       steps.push({ label: compactAdjustmentLabel(descuento.label), tone });
     });
-    steps.push({ label: "Google Sheets ✓", tone });
+    steps.push({ label: "auditoria local", tone });
     return steps;
   }
 
   if (result.action === "solicitar_info") {
     steps.push({ label: "faltan datos", tone });
     steps.push({ label: "sin precio", tone });
-    steps.push({ label: "Google Sheets ✓", tone });
+    steps.push({ label: "auditoria local", tone });
     return steps;
   }
 
@@ -51,10 +51,10 @@ export function getProcessingSeconds(result: ProcessedEmail, index: number): num
 export function getProcessingNote(result: ProcessedEmail, index: number): string {
   const seconds = getProcessingSeconds(result, index).toFixed(1);
   if (result.action === "responder_cotizacion") {
-    return `procesado en ${seconds}s · enviado a Sheets`;
+    return `procesado en ${seconds}s · cotizacion generada`;
   }
   if (result.action === "solicitar_info") {
-    return `procesado en ${seconds}s · datos solicitados · registrado en Sheets`;
+    return `procesado en ${seconds}s · datos solicitados · auditado`;
   }
   return `procesado en ${seconds}s · archivado · no recibe precio`;
 }
