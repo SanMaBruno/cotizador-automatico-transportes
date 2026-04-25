@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "transportes-la-serena-cotizador"
+version = "0.1.0"
+description = "Mini automatizacion de cotizacion para Transportes La Serena Ltda."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "Transportes La Serena Automation" }]
+dependencies = [
+  "fastapi>=0.115,<1",
+  "httpx>=0.27,<1",
+  "uvicorn[standard]>=0.30,<1",
+]
+
+[project.scripts]
+cotizador = "cotizador.presentation.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

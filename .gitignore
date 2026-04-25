@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/build/
+.npm/
+
+# Credenciales y entorno
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+
+# PDFs del brief (confidenciales, no subir)
+*.pdf
+
+# Outputs temporales
+out/*.log
+out/dry_run_*.jsonl

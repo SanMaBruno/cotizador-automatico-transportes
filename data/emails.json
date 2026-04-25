@@ -1,0 +1,27 @@
+[
+  {
+    "id": "email-1",
+    "sender": "psepulveda@ferreteriaeltornillo.cl",
+    "body": "Hola! Necesito cotizar un flete desde Santiago a La Serena. Son 4 pallets estándar, peso total 1.200 kg. Saldría mañana. Muchas gracias."
+  },
+  {
+    "id": "email-2",
+    "sender": "rdiaz@distvinossur.cl",
+    "body": "Buenos días, ¿cuánto me cobran por mandar unas cajas de vino al sur? Son harto, como 200 cajas. Urgente por favor."
+  },
+  {
+    "id": "email-3",
+    "sender": "mgonzalez@supermercaderiascentral.cl",
+    "body": "Hola chicos, ¿pueden cotizarme 2 viajes semanales fijos? Ruta Valparaíso → La Serena, 8 pallets refrigerados cada viaje, saliendo martes y viernes 6am. Necesito precio mensual que incluya seguro de carga. Empezaríamos en mayo. Si tienen tarifa preferencial por contrato a 6 meses mejor."
+  },
+  {
+    "id": "email-4",
+    "sender": "ventas@gpsrastreocl.com",
+    "body": "Estimados Transportes La Serena, les escribimos para ofrecerles nuestra nueva plataforma de rastreo GPS con descuento exclusivo este mes. Tenemos 3 planes desde $45.000 CLP mensuales que incluyen alertas en tiempo real y reportes automáticos. ¿Cuándo podríamos agendar una reunión para mostrarles? Quedamos atentos. Saludos cordiales."
+  },
+  {
+    "id": "email-5",
+    "sender": "bodega@ferreteriaeltornillo.cl",
+    "body": "Hola chicos! Mi pedido con guía de despacho 4782 ya debería haber llegado ayer a Coquimbo pero no tengo noticias. ¿Pueden consultar dónde está el camión? Urgente, el cliente final me está llamando. Gracias."
+  }
+]
