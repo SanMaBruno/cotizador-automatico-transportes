@@ -297,6 +297,11 @@ La auditoria por archivo, bugs encontrados y correcciones esta en [`docs/auditor
 
 La priorizacion de mejoras antes del deadline esta en [`docs/priorizacion-mejoras.md`](docs/priorizacion-mejoras.md).
 
+Para grabar y entregar rapido:
+
+- Guion de video: [`docs/demo-video-guion.md`](docs/demo-video-guion.md).
+- Resumen de 1 pagina: [`docs/README-1-pagina.md`](docs/README-1-pagina.md).
+
 ## Que Mejoraria con Mas Tiempo
 
 - Conectar Gmail real para leer y responder threads manteniendo idempotencia.

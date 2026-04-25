@@ -2,6 +2,10 @@
 
 La demo principal es el dashboard React/Vite en `frontend/`, conectado a FastAPI local.
 
+Guion listo para grabar: [`docs/demo-video-guion.md`](demo-video-guion.md).
+
+Resumen de entrega en formato 1 pagina: [`docs/README-1-pagina.md`](README-1-pagina.md).
+
 ```bash
 PYTHONPATH=src python3 -m uvicorn cotizador.presentation.api:app --host 127.0.0.1 --port 8000
 cd frontend && npm run dev
