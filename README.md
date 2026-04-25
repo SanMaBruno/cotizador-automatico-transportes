@@ -80,14 +80,14 @@ Si llega un email ambiguo que no entra en ninguna categoria, queda como `other`:
 Reglas:
 
 - Urgencia `<48h`: `+15%`.
-- Seguro de carga: `2%` del valor declarado, minimo `$15.000 CLP` por viaje.
+- Seguro de carga: `2%` del valor declarado, minimo `$15.000 CLP`.
 - Contrato mensual fijo, `>=4` viajes/mes: `-10%`.
 - Contrato semestral: `-5%` adicional despues del descuento mensual.
 
 Ejemplos validados:
 
 - Email 1: `4 pallets * $18.000 = $72.000`; urgencia `15% = $10.800`; total `$82.800 CLP`.
-- Email 3: `8 pallets * $29.500 * 8 viajes = $1.888.000`; mensual `-10% = $1.699.200`; semestral `*0,95 = $1.614.240`; seguro minimo `8 * $15.000 = $120.000`; total mensual `$1.734.240 CLP`; total 6 meses `$10.405.440 CLP`.
+- Email 3: `8 pallets * $29.500 * 8 viajes = $1.888.000`; mensual `-10% = $1.699.200`; semestral `*0,95 = $1.614.240`; seguro minimo `$15.000`; total mensual `$1.629.240 CLP`; total 6 meses `$9.775.440 CLP`.
 
 ## Stack Elegido y Justificacion
 
@@ -162,7 +162,7 @@ En esta revision no se incluyeron respuestas de modelos porque no habia credenci
 - El clasificador es heuristico y deterministico. Para 5 casos controlados es mas auditable que un LLM y evita clasificaciones no reproducibles.
 - Las rutas solo se cotizan si estan en la tabla oficial. Esto limita cobertura, pero evita inventar tarifas.
 - "2 viajes semanales" se transforma en 8 viajes/mes para seguir el criterio esperado del desafio, aunque una conversion comercial promedio seria 8,67.
-- Si se pide seguro sin valor declarado, el sistema aplica el minimo por viaje como indica el brief.
+- Si se pide seguro sin valor declarado, el sistema aplica el minimo literal de $15.000 CLP indicado en el brief.
 - `setup.py` y `pyproject.toml` coexisten por compatibilidad con instalacion editable y herramientas modernas.
 - La URL real de Google Sheets no se versiona. TODO operativo: crear deployment Apps Script y configurar `COTIZADOR_GOOGLE_SHEETS_WEBHOOK_URL`.
 
@@ -264,7 +264,7 @@ Abrir `http://127.0.0.1:5173`. Por defecto usa `VITE_API_BASE_URL=http://localho
 - Flujo funcional end-to-end: `POST /process` toma los 5 emails, clasifica, cotiza, filtra y expone resultados al frontend.
 - Integracion externa real: Google Sheets via Apps Script con deduplicacion por `email_id` y fecha; Gmail SMTP para enviar cotizaciones reales cuando `.env` esta completo.
 - Clasificacion previa: Email 1 y 3 se cotizan; Email 2 pide datos; Email 4 se archiva como oferta comercial; Email 5 se deriva a operaciones.
-- Respuestas coherentes con tarifa: Email 1 total `$82.800 CLP`; Email 3 total mensual `$1.734.240 CLP` y contrato 6 meses `$10.405.440 CLP`.
+- Respuestas coherentes con tarifa: Email 1 total `$82.800 CLP`; Email 3 total mensual `$1.629.240 CLP` y contrato 6 meses `$9.775.440 CLP`.
 - IA con criterio: prompt literal versionado, modelo justificado y uso acotado para redaccion/criterio sin delegar calculos tarifarios al modelo.
 - Observabilidad: auditoria JSONL local, resumen en Google Sheets, endpoint `/integrations/status` y tests backend/frontend.
 - Demo visual: frontend React/Vite con estado de integraciones, metricas, detalle por email y evidencia para video de menos de 3 minutos.

@@ -4,7 +4,7 @@ Fecha de revision: 2026-04-25. Deadline de entrega: jueves 30 de abril de 2026, 
 
 ## Resumen ejecutivo
 
-El proyecto ya tenia una base funcional: backend Python/FastAPI, CLI, frontend React/Vite, tests y una integracion externa por Google Sheets Apps Script/webhook. La revision detecto una divergencia relevante: el mock del frontend no aplicaba el seguro minimo del Email 3, por lo que podia mostrar un total distinto al backend. Tambien faltaba exponer el total del contrato a 6 meses y separar responsabilidades de clasificacion, cotizacion y redaccion.
+El proyecto ya tenia una base funcional: backend Python/FastAPI, CLI, frontend React/Vite, tests y una integracion externa por Google Sheets Apps Script/webhook. La revision detecto una divergencia relevante: el mock del frontend no aplicaba el seguro minimo del Email 3, por lo que podia mostrar un total distinto al backend. Tambien faltaba exponer el total del contrato a 6 meses, separar responsabilidades de clasificacion, cotizacion y redaccion, y ajustar el seguro minimo al texto literal del brief.
 
 Estado final: backend, CLI, API, tests y build frontend validados. El flujo cotiza Emails 1 y 3, pide datos para Email 2, archiva Email 4 y deriva Email 5 sin precio.
 
@@ -93,9 +93,9 @@ Estado final: backend, CLI, API, tests y build frontend validados. El flujo coti
 
 | Bug | Impacto | Correccion |
 |---|---|---|
-| Mock frontend no sumaba seguro minimo en Email 3. | Demo sin backend mostraba total incorrecto: faltaban $120.000 CLP. | `frontend/src/lib/cotizador/quote.ts` ahora calcula seguro minimo por viaje. |
-| No se exponia total de contrato a 6 meses. | El desafio pide presentar precio mensual y total semestral. | `QuoteBreakdown`, API, respuesta, UI y tests ahora incluyen `10.405.440 CLP`. |
+| Mock frontend no sumaba seguro minimo en Email 3. | Demo sin backend podia mostrar total distinto al backend. | `frontend/src/lib/cotizador/quote.ts` ahora calcula el seguro minimo literal de `$15.000 CLP`. |
+| No se exponia total de contrato a 6 meses. | El desafio pide presentar precio mensual y total semestral. | `QuoteBreakdown`, API, respuesta, UI y tests ahora incluyen `$9.775.440 CLP`. |
+| Seguro minimo se interpretaba como por viaje. | El PDF solo dice `minimo $15.000 CLP`; multiplicarlo por 8 viajes inventaba una regla no escrita. | Backend, frontend, tests y docs usan ahora `$15.000 CLP` como minimo literal cuando no hay valor declarado. |
 | `domain/services.py` mezclaba clasificacion, extraccion y calculo. | Menor claridad SOLID/SRP. | Se separo en `classifier/`, `quotation/`, `responder/`, `config/` e `integrations/`. |
 | Google Sheets no recibia total semestral. | Auditoria externa incompleta para contratos. | Se agrego `contract_total_clp` al payload y Apps Script. |
 | Frontend solo tenia test trivial. | No detectaba divergencia de calculo. | Se agrego test Vitest de Email 1, Email 2 y Email 3. |
-

@@ -46,8 +46,8 @@ class ApiContractTest(unittest.TestCase):
         self.assertEqual(payload["results"][0]["quote"]["total_clp"], 82_800)
         self.assertEqual(payload["results"][1]["action"], "solicitar_info")
         self.assertNotIn("quote", payload["results"][1])
-        self.assertEqual(payload["results"][2]["quote"]["total_clp"], 1_734_240)
-        self.assertEqual(payload["results"][2]["quote"]["total_contrato_clp"], 10_405_440)
+        self.assertEqual(payload["results"][2]["quote"]["total_clp"], 1_629_240)
+        self.assertEqual(payload["results"][2]["quote"]["total_contrato_clp"], 9_775_440)
         self.assertNotIn("missing_fields", payload["results"][2])
 
     def test_latest_run_is_available_after_process(self) -> None:

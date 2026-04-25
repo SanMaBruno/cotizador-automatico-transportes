@@ -110,7 +110,7 @@ class QuoteCalculatorRulesTest(unittest.TestCase):
         self.assertEqual(quote.insurance_clp, 40_000)
         self.assertEqual(quote.total_clp, 58_000)
 
-    def test_applies_minimum_insurance_per_trip_when_value_missing(self) -> None:
+    def test_applies_minimum_insurance_when_value_missing(self) -> None:
         route = self.rates.find_route("Valparaiso", "La Serena")
         request = ShipmentRequest(
             route=route,
@@ -123,7 +123,7 @@ class QuoteCalculatorRulesTest(unittest.TestCase):
 
         quote = self.calculator.calculate(request)
 
-        self.assertEqual(quote.insurance_clp, 120_000)
+        self.assertEqual(quote.insurance_clp, 15_000)
 
     def test_applies_monthly_and_semester_discounts_sequentially(self) -> None:
         route = self.rates.find_route("Valparaiso", "La Serena")

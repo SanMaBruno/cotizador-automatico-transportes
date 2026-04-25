@@ -71,7 +71,7 @@ Mostrar:
 - Hoja `cotizador_jaiar_labs`.
 - 5 filas esperadas.
 - Email 1 con `$82.800 CLP`.
-- Email 3 con `$1.734.240 CLP` y contrato `$10.405.440 CLP`.
+- Email 3 con `$1.629.240 CLP` y contrato `$9.775.440 CLP`.
 
 ### 1:55 - 2:25 | Gmail real
 
@@ -81,7 +81,7 @@ Mostrar:
 
 - Busqueda `subject:"Cotizacion Transportes La Serena"`.
 - Abrir Email 1: asunto con `email-1`, monto `$82.800 CLP`.
-- Abrir Email 3: asunto con `email-3`, monto `$1.734.240 CLP`.
+- Abrir Email 3: asunto con `email-3`, monto `$1.629.240 CLP`.
 
 ### 2:25 - 2:55 | Cierre
 
