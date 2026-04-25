@@ -12,7 +12,7 @@ from cotizador.domain.rates import default_rate_table
 from cotizador.infrastructure.json_email_repository import JsonEmailRepository
 from cotizador.quotation import QuoteCalculator, ShipmentRequestExtractor
 from cotizador.responder import ResponseBuilder
-from cotizador.integrations.email_sender import RecipientOverrideEmailSender
+from cotizador.integrations.email_sender import RecipientOverrideEmailSender, _normalize_smtp_password
 
 
 class MemoryPublisher(IntegrationPublisher):
@@ -119,6 +119,9 @@ class QuoteFlowTest(unittest.TestCase):
 
         self.assertEqual(sender.messages[0]["to"], "brunorodolfosanmartinnavarro@gmail.com")
         self.assertIn("[DEMO para cliente@example.com]", sender.messages[0]["subject"])
+
+    def test_normalizes_gmail_app_password_spaces(self) -> None:
+        self.assertEqual(_normalize_smtp_password("abcd efgh ijkl mnop"), "abcdefghijklmnop")
 
 
 if __name__ == "__main__":

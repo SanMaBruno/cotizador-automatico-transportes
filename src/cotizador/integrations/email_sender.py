@@ -95,7 +95,7 @@ def build_email_sender_from_env() -> EmailSender:
 
     host = os.getenv("SMTP_HOST")
     username = os.getenv("SMTP_USERNAME")
-    password = os.getenv("SMTP_PASSWORD")
+    password = _normalize_smtp_password(os.getenv("SMTP_PASSWORD"))
     from_email = os.getenv("SMTP_FROM")
     if not all([host, username, password, from_email]):
         return NoOpEmailSender()
@@ -115,3 +115,9 @@ def build_email_sender_from_env() -> EmailSender:
     if override_to:
         return RecipientOverrideEmailSender(sender, override_to)
     return sender
+
+
+def _normalize_smtp_password(value: Optional[str]) -> Optional[str]:
+    if value is None:
+        return None
+    return "".join(value.split())

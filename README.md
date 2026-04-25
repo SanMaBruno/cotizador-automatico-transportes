@@ -145,7 +145,7 @@ Salida:
 - Incluye consideraciones solo si vienen en assumptions.
 ```
 
-Modelo de IA recomendado para redaccion: GPT-4.1 mini o equivalente liviano. La razon es costo bajo, buena calidad en espanol y latencia suficiente para el SLA de 5 minutos. No se eligio usar IA para tarifas porque el riesgo principal del desafio es inventar datos o montos; el LLM solo deberia reformular texto usando un payload cerrado.
+Modelo de IA usado para disenar y validar el paso de redaccion: ChatGPT con criterio de prompt cerrado; para una integracion productiva usaria GPT-4.1 mini o equivalente liviano. La razon es costo bajo, buena calidad en espanol y latencia suficiente para el SLA de 5 minutos. La IA se aplica a criterio, clasificacion asistida y redaccion sobre datos ya estructurados; las tarifas quedan en reglas auditables para evitar montos inventados.
 
 La comparacion Claude vs GPT-4o esta preparada en [`docs/model-comparison.md`](docs/model-comparison.md) y se ejecuta con:
 
@@ -258,6 +258,16 @@ npm run dev
 ```
 
 Abrir `http://127.0.0.1:5173`. Por defecto usa `VITE_API_BASE_URL=http://localhost:8000`. Para demo sin backend: `VITE_USE_MOCK=true`.
+
+## Checklist del Desafio
+
+- Flujo funcional end-to-end: `POST /process` toma los 5 emails, clasifica, cotiza, filtra y expone resultados al frontend.
+- Integracion externa real: Google Sheets via Apps Script con deduplicacion por `email_id` y fecha; Gmail SMTP para enviar cotizaciones reales cuando `.env` esta completo.
+- Clasificacion previa: Email 1 y 3 se cotizan; Email 2 pide datos; Email 4 se archiva como oferta comercial; Email 5 se deriva a operaciones.
+- Respuestas coherentes con tarifa: Email 1 total `$82.800 CLP`; Email 3 total mensual `$1.734.240 CLP` y contrato 6 meses `$10.405.440 CLP`.
+- IA con criterio: prompt literal versionado, modelo justificado y uso acotado para redaccion/criterio sin delegar calculos tarifarios al modelo.
+- Observabilidad: auditoria JSONL local, resumen en Google Sheets, endpoint `/integrations/status` y tests backend/frontend.
+- Demo visual: frontend React/Vite con estado de integraciones, metricas, detalle por email y evidencia para video de menos de 3 minutos.
 
 ## Observabilidad y Escalabilidad
 

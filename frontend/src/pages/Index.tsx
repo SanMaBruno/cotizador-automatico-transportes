@@ -151,14 +151,14 @@ const Index = () => {
               <div className="max-w-2xl">
                 <div className="inline-flex items-center gap-2 rounded-md bg-[#1D9E75]/10 px-2.5 py-1 text-xs font-medium text-[#137A5A] dark:text-[#7EE0BE]">
                   <Sparkles className="h-3.5 w-3.5" />
-                  Operación comercial asistida por IA
+                  IA aplicada con control operativo
                 </div>
                 <h2 className="mt-4 text-2xl font-semibold tracking-normal">
                   De email desordenado a cotización auditada en segundos.
                 </h2>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  El backend calcula precios con Python, no con IA. El frontend muestra cada
-                  decisión y permite comprobar que los emails no cotizables no reciben precio.
+                  La IA apoya el criterio de clasificación y redacción; las tarifas quedan
+                  cerradas en reglas auditables para evitar montos inventados.
                 </p>
               </div>
               <Button onClick={handleProcess} disabled={loading} size="lg" className="h-12 px-5">
@@ -311,7 +311,7 @@ const Index = () => {
         </section>
 
         <footer className="pt-6 pb-2 text-xs text-muted-foreground">
-          JAIAR LABS AI Consulting · Tarifas según brief · Cálculo oficial en backend FastAPI.
+          JAIAR LABS AI Consulting · IA para criterio y redacción · Tarifas auditables según brief.
         </footer>
       </main>
     </div>

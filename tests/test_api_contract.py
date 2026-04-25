@@ -1,6 +1,12 @@
 from __future__ import annotations
 
+import os
 import unittest
+
+os.environ["COTIZADOR_GOOGLE_SHEETS_WEBHOOK_URL"] = ""
+os.environ["COTIZADOR_EMAIL_DRY_RUN"] = "true"
+os.environ["COTIZADOR_EMAIL_DRY_RUN_PATH"] = "/tmp/cotizador_api_contract_emails.jsonl"
+os.environ["COTIZADOR_EMAIL_OVERRIDE_TO"] = "test@example.com"
 
 from fastapi.testclient import TestClient
 
