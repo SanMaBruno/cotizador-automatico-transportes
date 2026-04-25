@@ -123,7 +123,7 @@ class QuoteCalculatorRulesTest(unittest.TestCase):
 
         quote = self.calculator.calculate(request)
 
-        self.assertEqual(quote.insurance_clp, 15_000)
+        self.assertEqual(quote.insurance_clp, 120_000)
 
     def test_applies_monthly_and_semester_discounts_sequentially(self) -> None:
         route = self.rates.find_route("Valparaiso", "La Serena")

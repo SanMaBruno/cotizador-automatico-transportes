@@ -114,10 +114,12 @@ export function calcQuote(e: Extracted): Quote | null {
   }
 
   if (e.pide_seguro) {
+    const viajesSeguro = viajes || 1;
+    const minimo = RECARGOS.seguro_min_clp * viajesSeguro;
     const variable = e.valor_declarado_clp
       ? Math.round(e.valor_declarado_clp * RECARGOS.seguro_pct)
       : 0;
-    const seguro = Math.max(variable, RECARGOS.seguro_min_clp);
+    const seguro = Math.max(variable, minimo);
     recargos.push({ label: "Seguro de carga", amount_clp: seguro });
     total += seguro;
   }

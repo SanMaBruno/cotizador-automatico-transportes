@@ -4,7 +4,7 @@ from typing import List
 
 from cotizador.config.business_rules import (
     INSURANCE_RATE,
-    MINIMUM_INSURANCE_CLP,
+    MINIMUM_INSURANCE_PER_TRIP_CLP,
     MONTHLY_CONTRACT_DISCOUNT_RATE,
     MONTHLY_CONTRACT_MINIMUM_TRIPS,
     SEMESTER_CONTRACT_DISCOUNT_RATE,
@@ -60,7 +60,7 @@ class QuoteCalculator:
         insurance = self._calculate_insurance(request)
         if request.insurance_requested and request.declared_value_clp is None:
             assumptions.append(
-                "Seguro calculado con minimo de 15.000 CLP por no indicar valor declarado."
+                "Seguro calculado con minimo de 15.000 CLP por viaje por no indicar valor declarado."
             )
         if request.monthly_trips > 1:
             assumptions.append(f"Precio mensual calculado con {request.monthly_trips} viajes al mes.")
@@ -83,8 +83,9 @@ class QuoteCalculator:
         if not request.insurance_requested:
             return 0
 
+        minimum = MINIMUM_INSURANCE_PER_TRIP_CLP * max(request.monthly_trips, 1)
         if request.declared_value_clp is None:
-            return MINIMUM_INSURANCE_CLP
+            return minimum
 
         variable = round(request.declared_value_clp * INSURANCE_RATE)
-        return max(variable, MINIMUM_INSURANCE_CLP)
+        return max(variable, minimum)

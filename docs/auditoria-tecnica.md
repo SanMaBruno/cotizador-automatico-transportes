@@ -93,9 +93,9 @@ Estado final: backend, CLI, API, tests y build frontend validados. El flujo coti
 
 | Bug | Impacto | Correccion |
 |---|---|---|
-| Mock frontend no sumaba seguro minimo en Email 3. | Demo sin backend podia mostrar total distinto al backend. | `frontend/src/lib/cotizador/quote.ts` ahora calcula el seguro minimo literal de `$15.000 CLP`. |
-| No se exponia total de contrato a 6 meses. | El desafio pide presentar precio mensual y total semestral. | `QuoteBreakdown`, API, respuesta, UI y tests ahora incluyen `$9.775.440 CLP`. |
-| Seguro minimo se interpretaba como por viaje. | El PDF solo dice `minimo $15.000 CLP`; multiplicarlo por 8 viajes inventaba una regla no escrita. | Backend, frontend, tests y docs usan ahora `$15.000 CLP` como minimo literal cuando no hay valor declarado. |
+| Mock frontend no sumaba seguro minimo en Email 3. | Demo sin backend podia mostrar total distinto al backend. | `frontend/src/lib/cotizador/quote.ts` ahora calcula el seguro minimo de `$15.000 CLP` por viaje. |
+| No se exponia total de contrato a 6 meses. | El desafio pide presentar precio mensual y total semestral. | `QuoteBreakdown`, API, respuesta, UI y tests ahora incluyen `$10.405.440 CLP`. |
+| Seguro minimo debe aplicarse por viaje. | Las reglas de negocio obligatorias establecen minimo `$15.000 CLP` por viaje; para 8 viajes mensuales son `$120.000 CLP`. | Backend, frontend, tests y docs calculan seguro por viaje cuando no hay valor declarado. |
 | `domain/services.py` mezclaba clasificacion, extraccion y calculo. | Menor claridad SOLID/SRP. | Se separo en `classifier/`, `quotation/`, `responder/`, `config/` e `integrations/`. |
 | Google Sheets no recibia total semestral. | Auditoria externa incompleta para contratos. | Se agrego `contract_total_clp` al payload y Apps Script. |
 | Frontend solo tenia test trivial. | No detectaba divergencia de calculo. | Se agrego test Vitest de Email 1, Email 2 y Email 3. |

@@ -75,9 +75,9 @@ class QuoteFlowTest(unittest.TestCase):
         self.assertEqual(result.quote.base_subtotal_clp, 1_888_000)
         self.assertEqual(result.quote.monthly_discount_clp, 188_800)
         self.assertEqual(result.quote.semester_discount_clp, 84_960)
-        self.assertEqual(result.quote.insurance_clp, 15_000)
-        self.assertEqual(result.quote.total_clp, 1_629_240)
-        self.assertEqual(result.quote.contract_total_clp, 9_775_440)
+        self.assertEqual(result.quote.insurance_clp, 120_000)
+        self.assertEqual(result.quote.total_clp, 1_734_240)
+        self.assertEqual(result.quote.contract_total_clp, 10_405_440)
 
     def test_non_quote_emails_do_not_get_quote_response(self) -> None:
         results = self.use_case.execute()
@@ -109,7 +109,7 @@ class QuoteFlowTest(unittest.TestCase):
         self.assertEqual(sender.messages[0]["to"], "psepulveda@ferreteriaeltornillo.cl")
         self.assertEqual(sender.messages[1]["to"], "mgonzalez@supermercaderiascentral.cl")
         self.assertIn("$82.800 CLP", sender.messages[0]["body"])
-        self.assertIn("$1.629.240 CLP", sender.messages[1]["body"])
+        self.assertIn("$1.734.240 CLP", sender.messages[1]["body"])
 
     def test_can_redirect_quote_emails_to_demo_recipient(self) -> None:
         sender = MemoryEmailSender()

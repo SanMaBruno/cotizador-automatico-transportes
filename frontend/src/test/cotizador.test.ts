@@ -16,8 +16,8 @@ describe("cotizador frontend mock", () => {
     const quote = calcQuote(extract(SAMPLE_EMAILS[2]));
 
     expect(quote?.precio_base_clp).toBe(1_888_000);
-    expect(quote?.total_clp).toBe(1_629_240);
-    expect(quote?.total_contrato_clp).toBe(9_775_440);
+    expect(quote?.total_clp).toBe(1_734_240);
+    expect(quote?.total_contrato_clp).toBe(10_405_440);
   });
 
   it("does not invent a quote for ambiguous email 2", () => {
@@ -30,7 +30,7 @@ describe("cotizador frontend mock", () => {
   it("builds decision chains and run totals for the dashboard", async () => {
     const run = await mockClient.process();
 
-    expect(getQuotedTotalClp(run)).toBe(1_712_040);
+    expect(getQuotedTotalClp(run)).toBe(1_817_040);
     expect(buildDecisionSteps(run.results[0]).map((step) => step.label)).toEqual([
       "quote_request",
       "reply_with_quote",
