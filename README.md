@@ -8,6 +8,9 @@
 
 Mini-cotizador automatizado para clasificar emails, cotizar fletes y registrar auditoria externa para Transportes La Serena Ltda.
 
+**Autor:** Bruno San Martin Navarro  
+**LinkedIn:** [linkedin.com/in/sanmabruno](https://www.linkedin.com/in/sanmabruno/)
+
 ## El Problema
 
 Transportes La Serena recibe correos mezclados: solicitudes de flete, preguntas incompletas, ofertas comerciales y consultas de tracking. El desafio exige responder cotizaciones validas en menos de 5 minutos, no inventar precios cuando faltan datos y filtrar correos que no correspondan. La solucion deja los calculos fuera del LLM para reducir alucinaciones y mantener auditoria.
@@ -194,6 +197,8 @@ FastAPI con Google Sheets:
 COTIZADOR_GOOGLE_SHEETS_WEBHOOK_URL="https://script.google.com/macros/s/..." \
 PYTHONPATH=src python3 -m uvicorn cotizador.presentation.api:app --host 127.0.0.1 --port 8000
 ```
+
+El Apps Script en `docs/google-sheets-apps-script.js` evita duplicados por `email_id` y fecha del procesamiento. Si se ejecuta el flujo varias veces el mismo dia, el Google Sheet conserva una sola fila por email.
 
 FastAPI con envio real por Gmail SMTP:
 

@@ -31,25 +31,40 @@ const SUMMARY_HEADERS = ["metric", "value"];
 
 function doPost(e) {
   const payload = JSON.parse(e.postData.contents);
-  const dataSheet = getSheet_(DATA_SHEET_NAME, DATA_HEADERS);
-  dataSheet.appendRow([
-    new Date(),
-    payload.email_id || "",
-    payload.sender || "",
-    payload.classification || "",
-    payload.action || "",
-    payload.quote_total_clp || "",
-    payload.contract_total_clp || "",
-    payload.missing_fields || "",
-    payload.reason || "",
-    payload.response || "",
-  ]);
+  const receivedAt = new Date();
+  const emailId = String(payload.email_id || "").trim();
+  const lock = LockService.getScriptLock();
 
-  updateSummary_(dataSheet);
+  lock.waitLock(10000);
+  try {
+    const dataSheet = getSheet_(DATA_SHEET_NAME, DATA_HEADERS);
+    if (alreadyProcessedToday_(dataSheet, emailId, receivedAt)) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ ok: true, skipped: true, reason: "duplicate_email_id_for_date" }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
 
-  return ContentService
-    .createTextOutput(JSON.stringify({ ok: true }))
-    .setMimeType(ContentService.MimeType.JSON);
+    dataSheet.appendRow([
+      receivedAt,
+      emailId,
+      payload.sender || "",
+      payload.classification || "",
+      payload.action || "",
+      payload.quote_total_clp || "",
+      payload.contract_total_clp || "",
+      payload.missing_fields || "",
+      payload.reason || "",
+      payload.response || "",
+    ]);
+
+    updateSummary_(dataSheet);
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ ok: true, skipped: false }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function getSheet_(sheetName, headers) {
@@ -64,6 +79,11 @@ function getSheet_(sheetName, headers) {
   }
 
   return sheet;
+}
+
+function rebuildSummary() {
+  const dataSheet = getSheet_(DATA_SHEET_NAME, DATA_HEADERS);
+  updateSummary_(dataSheet);
 }
 
 function updateSummary_(dataSheet) {
@@ -94,6 +114,31 @@ function getDataRows_(sheet) {
     return [];
   }
   return sheet.getRange(2, 1, lastRow - 1, DATA_HEADERS.length).getValues();
+}
+
+function alreadyProcessedToday_(sheet, emailId, receivedAt) {
+  if (!emailId) {
+    return false;
+  }
+
+  const rows = getDataRows_(sheet);
+  const receivedDateKey = dateKey_(receivedAt);
+  return rows.some((row) => {
+    const existingEmailId = String(row[1] || "").trim();
+    if (existingEmailId !== emailId) {
+      return false;
+    }
+    return dateKey_(row[0]) === receivedDateKey;
+  });
+}
+
+function dateKey_(value) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+  const timezone = SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetTimeZone();
+  return Utilities.formatDate(date, timezone, "yyyy-MM-dd");
 }
 
 function toNumber_(value) {
